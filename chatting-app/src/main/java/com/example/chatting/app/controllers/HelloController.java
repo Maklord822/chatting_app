@@ -1,5 +1,5 @@
 package com.example.chatting.app.controllers;
-
+/*
 import com.example.chatting.app.entities.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,3 +32,4 @@ public class HelloController {
         );
     }
 }
+*/

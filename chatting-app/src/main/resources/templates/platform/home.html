@@ -1,10 +1,952 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatty · home</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ---------- base / reset ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        /* main card */
+        .app-container {
+            max-width: 600px;
+            width: 100%;
+            margin: 1.5rem;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+            padding: 2rem 1.8rem 2.2rem;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        /* header: profile + theme toggle + auth buttons */
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .avatar {
+            width: 52px;
+            height: 52px;
+            background: #e6edf5;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: #1f2a3a;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+            transition: background 0.2s, color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-greeting {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: #5e6f88;
+            letter-spacing: 0.3px;
+        }
+
+        .user-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #0b1a2b;
+            line-height: 1.3;
+        }
+
+        .auth-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .auth-btn {
+            background: #f0f3f8;
+            border: none;
+            border-radius: 40px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1f2a3a;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, box-shadow 0.1s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .auth-btn:hover {
+            background: #e3e9f2;
+        }
+
+        .auth-btn.logout-btn {
+            background: #fee9e9;
+            color: #b13e3e;
+        }
+
+        .auth-btn.logout-btn:hover {
+            background: #fcd5d5;
+        }
+
+        .theme-toggle {
+            background: #f0f3f8;
+            border: none;
+            border-radius: 40px;
+            padding: 0.6rem 1.1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1f2a3a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, box-shadow 0.1s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .theme-toggle:hover {
+            background: #e3e9f2;
+        }
+
+        .theme-toggle i {
+            font-size: 1rem;
+        }
+
+        /* ---- auth modal overlay ---- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.35);
+            backdrop-filter: blur(3px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1.5rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-panel {
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem 2.2rem 2.4rem;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .modal-panel h2 {
+            font-weight: 600;
+            color: #1f2a3a;
+            margin-bottom: 0.2rem;
+        }
+
+        .modal-panel .sub {
+            color: #6b7f99;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-panel .field {
+            margin-bottom: 1rem;
+        }
+
+        .modal-panel label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 0.2rem;
+        }
+
+        .modal-panel input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid #dce5ef;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            background: #f8faff;
+            transition: border 0.15s, background 0.15s;
+            outline: none;
+        }
+
+        .modal-panel input:focus {
+            border-color: #7f9bc0;
+            background: white;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.7rem;
+            margin-top: 1.8rem;
+            flex-wrap: wrap;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 0.7rem 0.5rem;
+            border-radius: 40px;
+            border: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.15s;
+            min-width: 80px;
+        }
+
+        .modal-actions .btn-primary {
+            background: #1f2a3a;
+            color: white;
+        }
+
+        .modal-actions .btn-primary:hover {
+            background: #2b3a4f;
+        }
+
+        .modal-actions .btn-secondary {
+            background: #eef2f7;
+            color: #1f2a3a;
+        }
+
+        .modal-actions .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.4rem;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: #889bb3;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #1f2a3a;
+        }
+
+        .modal-error {
+            color: #b13e3e;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            min-height: 1.2rem;
+        }
+
+        /* chat placeholder */
+        .chats-section {
+            margin-top: 1.8rem;
+        }
+
+        .chats-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .chats-header h3 {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #1f2a3a;
+        }
+
+        .chats-badge {
+            background: #eef2f7;
+            color: #2c3e50;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            font-weight: 500;
+        }
+
+        .chat-list {
+            background: #f8faff;
+            border-radius: 1.4rem;
+            padding: 1.2rem 1.2rem 0.8rem;
+            min-height: 140px;
+            border: 1px solid #eef3f9;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            padding: 0.5rem 0.4rem 0.8rem;
+            border-bottom: 1px solid #e9eef5;
+            transition: border 0.2s;
+        }
+
+        .chat-item:last-child {
+            border-bottom: none;
+        }
+
+        .chat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 30px;
+            background: #dce5ef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1f2a3a;
+            font-size: 1.1rem;
+        }
+
+        .chat-detail {
+            flex: 1;
+        }
+
+        .chat-title {
+            font-weight: 500;
+            color: #1e2b3c;
+        }
+
+        .chat-meta {
+            font-size: 0.75rem;
+            color: #6b7f99;
+        }
+
+        .empty-chats {
+            color: #6f85a0;
+            text-align: center;
+            padding: 1.4rem 0 1rem;
+            font-size: 0.95rem;
+        }
+
+        .empty-chats i {
+            margin-right: 6px;
+            opacity: 0.6;
+        }
+
+        /* subtle footer */
+        .footer-note {
+            margin-top: 2.2rem;
+            font-size: 0.7rem;
+            color: #889bb3;
+            text-align: center;
+            border-top: 1px solid #edf2f8;
+            padding-top: 1.2rem;
+            letter-spacing: 0.3px;
+        }
+
+        /* ---------- DARK THEME ---------- */
+        body.dark {
+            background-color: #12181f;
+        }
+
+        body.dark .app-container {
+            background: #1e2630;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.6);
+        }
+
+        body.dark .user-name {
+            color: #edf2f9;
+        }
+
+        body.dark .user-greeting {
+            color: #a0b6cf;
+        }
+
+        body.dark .avatar {
+            background: #2b3645;
+            color: #d3e0f0;
+        }
+
+        body.dark .theme-toggle {
+            background: #2f3b4b;
+            color: #d3e0f0;
+        }
+
+        body.dark .theme-toggle:hover {
+            background: #3b495c;
+        }
+
+        body.dark .auth-btn {
+            background: #2f3b4b;
+            color: #d3e0f0;
+        }
+
+        body.dark .auth-btn:hover {
+            background: #3b495c;
+        }
+
+        body.dark .auth-btn.logout-btn {
+            background: #4a2d2d;
+            color: #f0baba;
+        }
+
+        body.dark .auth-btn.logout-btn:hover {
+            background: #5e3838;
+        }
+
+        body.dark .chats-header h3 {
+            color: #dce6f2;
+        }
+
+        body.dark .chats-badge {
+            background: #2d3a4a;
+            color: #c0d0e3;
+        }
+
+        body.dark .chat-list {
+            background: #1b242f;
+            border-color: #2d3b4b;
+        }
+
+        body.dark .chat-item {
+            border-bottom-color: #2c3a4a;
+        }
+
+        body.dark .chat-title {
+            color: #dce6f2;
+        }
+
+        body.dark .chat-meta {
+            color: #9cb1ca;
+        }
+
+        body.dark .chat-icon {
+            background: #2f3d50;
+            color: #c8d9ed;
+        }
+
+        body.dark .empty-chats {
+            color: #95abc4;
+        }
+
+        body.dark .footer-note {
+            border-top-color: #2b3849;
+            color: #859bb6;
+        }
+
+        /* modal dark */
+        body.dark .modal-overlay {
+            background: rgba(0,0,0,0.6);
+        }
+
+        body.dark .modal-panel {
+            background: #1e2630;
+        }
+
+        body.dark .modal-panel h2 {
+            color: #edf2f9;
+        }
+
+        body.dark .modal-panel .sub {
+            color: #a0b6cf;
+        }
+
+        body.dark .modal-panel label {
+            color: #c8d9ed;
+        }
+
+        body.dark .modal-panel input {
+            background: #2b3645;
+            border-color: #3b495c;
+            color: #edf2f9;
+        }
+
+        body.dark .modal-panel input:focus {
+            border-color: #7f9bc0;
+            background: #2f3d50;
+        }
+
+        body.dark .modal-actions .btn-primary {
+            background: #3b495c;
+            color: white;
+        }
+
+        body.dark .modal-actions .btn-primary:hover {
+            background: #4e6077;
+        }
+
+        body.dark .modal-actions .btn-secondary {
+            background: #2d3a4a;
+            color: #d3e0f0;
+        }
+
+        body.dark .modal-actions .btn-secondary:hover {
+            background: #3b495c;
+        }
+
+        body.dark .modal-close {
+            color: #9cb1ca;
+        }
+
+        body.dark .modal-close:hover {
+            color: #edf2f9;
+        }
+
+        body.dark .modal-error {
+            color: #f0baba;
+        }
+
+        .fa-chevron-right {
+            font-size: 0.7rem;
+            opacity: 0.5;
+            margin-left: auto;
+        }
+    </style>
 </head>
 <body>
+
+<div class="app-container" id="appContainer">
+    <!-- header row : profile + theme toggle + auth buttons -->
+    <div class="header-row">
+        <div class="user-area">
+            <div class="avatar" id="avatarDisplay">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-info">
+                <span class="user-greeting">Welcome back</span>
+                <span class="user-name" id="userNameDisplay">—</span>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+            <div class="auth-actions" id="authActions">
+                <button class="auth-btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                <button class="auth-btn" id="registerBtn"><i class="fas fa-user-plus"></i> Register</button>
+            </div>
+            <button class="theme-toggle" id="themeToggleBtn">
+                <i class="fas fa-moon" id="themeIcon"></i>
+                <span id="themeLabel">Dark</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- chats section -->
+    <div class="chats-section">
+        <div class="chats-header">
+            <h3><i class="fas fa-comments" style="margin-right: 8px; opacity:0.7;"></i>Chats</h3>
+            <span class="chats-badge" id="chatCountBadge">0</span>
+        </div>
+
+        <div class="chat-list" id="chatListContainer">
+            <div class="empty-chats" id="emptyChatsPlaceholder">
+                <i class="fas fa-inbox"></i> no conversations yet
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        <i class="fas fa-shield-alt" style="margin-right: 4px;"></i> XSRF protected · secure
+    </div>
+</div>
+
+<!-- ===== MODAL (login / register) ===== -->
+<div class="modal-overlay" id="authModal">
+    <div class="modal-panel">
+        <button class="modal-close" id="modalCloseBtn"><i class="fas fa-times"></i></button>
+        <h2 id="modalTitle">Login</h2>
+        <div class="sub" id="modalSub">Enter your credentials</div>
+
+        <div class="field">
+            <label for="modalUsername">Username</label>
+            <input type="text" id="modalUsername" placeholder="your username" autocomplete="username">
+        </div>
+        <div class="field">
+            <label for="modalPassword">Password</label>
+            <input type="password" id="modalPassword" placeholder="••••••••" autocomplete="current-password">
+        </div>
+
+        <div class="modal-error" id="modalError"></div>
+
+        <div class="modal-actions">
+            <button class="btn-primary" id="modalSubmitBtn">Submit</button>
+            <button class="btn-secondary" id="modalCancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        "use strict";
+
+        // ----- DOM refs -----
+        const userNameEl = document.getElementById('userNameDisplay');
+        const avatarEl = document.getElementById('avatarDisplay');
+        const chatListContainer = document.getElementById('chatListContainer');
+        const chatCountBadge = document.getElementById('chatCountBadge');
+
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeLabel = document.getElementById('themeLabel');
+
+        // Auth buttons
+        let loginBtn = document.getElementById('loginBtn');
+        let registerBtn = document.getElementById('registerBtn');
+        const authActions = document.getElementById('authActions');
+
+        // Modal
+        const modalOverlay = document.getElementById('authModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalSub = document.getElementById('modalSub');
+        const modalUsername = document.getElementById('modalUsername');
+        const modalPassword = document.getElementById('modalPassword');
+        const modalError = document.getElementById('modalError');
+        const modalSubmitBtn = document.getElementById('modalSubmitBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+        // ----- state -----
+        let currentUser = null;
+        let modalMode = 'login';
+        let csrfToken = null;
+
+        // ----- helpers -----
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        // ----- CSRF fetch -----
+        async function fetchCsrfToken() {
+            try {
+                const resp = await fetch('/csrf-token', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if (!resp.ok) throw new Error(`CSRF fetch failed: ${resp.status}`);
+                const data = await resp.json();
+                if (data && typeof data.token === 'string') {
+                    csrfToken = data.token;
+                    return csrfToken;
+                }
+                return null;
+            } catch (err) {
+                console.warn('CSRF error:', err);
+                return null;
+            }
+        }
+
+        // ----- fetch user data with X-XSRF-TOKEN -----
+        async function fetchUserData(token) {
+            try {
+                const headers = new Headers();
+                if (token) headers.append('X-XSRF-TOKEN', token);
+                headers.append('Accept', 'application/json');
+
+                const resp = await fetch('/auth/user/get', {
+                    method: 'GET',
+                    headers: headers,
+                    credentials: 'include'
+                });
+
+                if (!resp.ok) {
+                    if (resp.status === 401 || resp.status === 403) return false;
+                    throw new Error(`User fetch failed: ${resp.status}`);
+                }
+
+                const data = await resp.json();
+                if (typeof data === 'boolean') return data;
+                if (data && typeof data === 'object' && data !== null) return data;
+                return false;
+            } catch (err) {
+                console.warn('User data error:', err);
+                return false;
+            }
+        }
+
+        // ----- render UI based on userData -----
+        function renderUser(userData) {
+            currentUser = userData;
+
+            if (!userData || userData === false) {
+                userNameEl.textContent = 'Guest';
+                avatarEl.innerHTML = '<i class="fas fa-user-circle" style="font-size: 2rem;"></i>';
+                chatListContainer.innerHTML = `
+                    <div class="empty-chats">
+                        <i class="fas fa-lock"></i> sign in to see chats
+                    </div>
+                `;
+                chatCountBadge.textContent = '0';
+
+                authActions.innerHTML = `
+                    <button class="auth-btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                    <button class="auth-btn" id="registerBtn"><i class="fas fa-user-plus"></i> Register</button>
+                `;
+                document.getElementById('loginBtn').addEventListener('click', () => openModal('login'));
+                document.getElementById('registerBtn').addEventListener('click', () => openModal('register'));
+                return;
+            }
+
+            const name = userData.name || 'User';
+            userNameEl.textContent = name;
+            const initial = name.charAt(0).toUpperCase() || 'U';
+            avatarEl.innerHTML = `<span style="font-size: 1.7rem; font-weight: 500;">${initial}</span>`;
+
+            let chats = userData.chats;
+            if (!Array.isArray(chats)) chats = [];
+            const chatCount = chats.length;
+            chatCountBadge.textContent = chatCount;
+
+            if (chatCount === 0) {
+                chatListContainer.innerHTML = `
+                    <div class="empty-chats">
+                        <i class="fas fa-comment-slash"></i> no chats yet
+                    </div>
+                `;
+            } else {
+                let html = '';
+                chats.forEach((chat, idx) => {
+                    let title = 'Chat';
+                    let meta = 'private';
+                    if (typeof chat === 'string') {
+                        title = chat;
+                    } else if (chat && typeof chat === 'object') {
+                        title = chat.name || chat.title || `Chat ${idx+1}`;
+                        meta = chat.type || 'direct';
+                    }
+                    html += `
+                        <div class="chat-item">
+                            <div class="chat-icon"><i class="fas fa-user-friends"></i></div>
+                            <div class="chat-detail">
+                                <div class="chat-title">${escapeHtml(title)}</div>
+                                <div class="chat-meta"><i class="far fa-clock"></i> ${escapeHtml(meta)}</div>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color: #9aafc7;"></i>
+                        </div>
+                    `;
+                });
+                chatListContainer.innerHTML = html;
+            }
+
+            authActions.innerHTML = `
+                <button class="auth-btn logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            `;
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        }
+
+        // ----- modal open -----
+        function openModal(mode) {
+            modalMode = mode;
+            if (mode === 'login') {
+                modalTitle.textContent = 'Login';
+                modalSub.textContent = 'Enter your credentials';
+                modalSubmitBtn.textContent = 'Login';
+            } else {
+                modalTitle.textContent = 'Register';
+                modalSub.textContent = 'Create a new account';
+                modalSubmitBtn.textContent = 'Register';
+            }
+            modalUsername.value = '';
+            modalPassword.value = '';
+            modalError.textContent = '';
+            modalOverlay.classList.add('active');
+            modalUsername.focus();
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+        }
+
+        // ----- handle auth submit (login / register) -----
+        async function handleAuthSubmit() {
+            const username = modalUsername.value.trim();
+            const password = modalPassword.value.trim();
+            if (!username || !password) {
+                modalError.textContent = 'Please fill in both fields.';
+                return;
+            }
+
+            const endpoint = modalMode === 'login' ? '/auth/user/login' : '/auth/user/register';
+            const payload = { name: username, password: password };
+
+            try {
+                const token = await fetchCsrfToken();
+                const headers = new Headers();
+                headers.append('Content-Type', 'application/json');
+                if (token) headers.append('X-XSRF-TOKEN', token);
+                headers.append('Accept', 'application/json');
+
+                const resp = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: headers,
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+
+                let data;
+                try { data = await resp.json(); } catch (_) { data = null; }
+
+                if (data === false || (data && data.success === false)) {
+                    const msg = data && data.message ? data.message : 'Authentication failed.';
+                    modalError.textContent = msg;
+                    return;
+                }
+
+                if (data.registered === true) {
+                    closeModal();
+                    const freshToken = await fetchCsrfToken();
+                    const userData = await fetchUserData(freshToken);
+                    renderUser(userData);
+                } else {
+                    modalError.textContent = 'Unexpected response from server.';
+                }
+            } catch (err) {
+                console.error('Auth error:', err);
+                modalError.textContent = 'Network error. Please try again.';
+            }
+        }
+
+        // ----- logout - using Spring Security's default logout -----
+        async function handleLogout() {
+            try {
+                // Get fresh CSRF token
+                const token = await fetchCsrfToken();
+
+                // Try both approaches: X-XSRF-TOKEN header and _csrf parameter
+                const headers = new Headers();
+                headers.append('Accept', 'application/json');
+                if (token) {
+                    headers.append('X-XSRF-TOKEN', token);
+                }
+
+                // Also send as parameter for Spring Security's default logout
+                const url = new URL('/logout', window.location.origin);
+                if (token) {
+                    url.searchParams.append('_csrf', token);
+                }
+
+                const resp = await fetch(url.toString(), {
+                    method: 'POST',
+                    headers: headers,
+                    credentials: 'include'
+                });
+
+                // After logout attempt, refresh user state
+                // Even if logout fails (403), we try to fetch user again
+                // If the session is invalid, we'll get a guest user
+                const freshToken = await fetchCsrfToken();
+                const userData = await fetchUserData(freshToken);
+                renderUser(userData);
+            } catch (err) {
+                console.warn('Logout error:', err);
+                // Fallback: clear client-side state and try to fetch
+                try {
+                    const freshToken = await fetchCsrfToken();
+                    const userData = await fetchUserData(freshToken);
+                    renderUser(userData);
+                } catch (fallbackErr) {
+                    // If all fails, show guest
+                    renderUser(false);
+                }
+            }
+        }
+
+        // ----- theme -----
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.classList.toggle('dark');
+            themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            themeLabel.textContent = isDark ? 'Light' : 'Dark';
+            try { localStorage.setItem('chatTheme', isDark ? 'dark' : 'light'); } catch (_) {}
+        }
+
+        function loadThemePreference() {
+            try {
+                const stored = localStorage.getItem('chatTheme');
+                if (stored === 'dark') {
+                    document.body.classList.add('dark');
+                    themeIcon.className = 'fas fa-sun';
+                    themeLabel.textContent = 'Light';
+                } else {
+                    document.body.classList.remove('dark');
+                    themeIcon.className = 'fas fa-moon';
+                    themeLabel.textContent = 'Dark';
+                }
+            } catch (_) {}
+        }
+
+        // ----- init -----
+        async function initApp() {
+            loadThemePreference();
+
+            const token = await fetchCsrfToken();
+            const userData = await fetchUserData(token);
+            renderUser(userData);
+
+            // --- event listeners ---
+            themeToggleBtn.addEventListener('click', toggleTheme);
+
+            modalCloseBtn.addEventListener('click', closeModal);
+            modalCancelBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+            modalSubmitBtn.addEventListener('click', handleAuthSubmit);
+
+            modalUsername.addEventListener('keydown', (e) => { if (e.key === 'Enter') modalPassword.focus(); });
+            modalPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAuthSubmit(); });
+        }
+
+        // Override renderUser to re-bind auth buttons
+        const originalRender = renderUser;
+        renderUser = function(userData) {
+            originalRender(userData);
+            const login = document.getElementById('loginBtn');
+            const register = document.getElementById('registerBtn');
+            if (login) login.addEventListener('click', () => openModal('login'));
+            if (register) register.addEventListener('click', () => openModal('register'));
+        };
+
+        initApp().catch(err => {
+            console.error('Init error:', err);
+            userNameEl.textContent = 'Error';
+            avatarEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+        });
+
+    })();
+</script>
 
 </body>
 </html>

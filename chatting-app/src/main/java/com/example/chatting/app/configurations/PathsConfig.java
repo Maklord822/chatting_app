@@ -13,11 +13,12 @@ public class PathsConfig {
     public List<String> publicPaths() {
 
         return List.of("/",
-                "/home",
+               // "/home",
                 "/csrf-token",
                 "/auth/user/get",
                 "/auth/user/register",
-                "/auth/user/login");
+                "/auth/user/login",
+                "/logout");
     }
 
     @Bean(value = "securedPaths")

@@ -29,4 +29,8 @@ public class Chat {
     @JoinTable(name = "users_included")
     private List<User> usersIncluded;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "creator")
+    private User creator;
+
 }

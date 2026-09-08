@@ -63,8 +63,23 @@ public class SecurityConfig {
                     securedPaths.forEach(path -> requests.requestMatchers(path).authenticated());
                    // requests.anyRequest().denyAll();
                 })
+                .rememberMe(rememberMe -> rememberMe
+                        .rememberMeServices(tokenBasedRememberMeServices(new UserDetailsService() {
+                            @Override
+                            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                                return null;
+                            }
+                        }))
+                        .tokenValiditySeconds(30*24*60*60)
+                        .key("1234567"))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        })
+                )
                 .exceptionHandling(exception -> exception
                                 .accessDeniedHandler((request, response, accessDeniedException) -> {
                                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -92,20 +107,24 @@ public class SecurityConfig {
     }
 
     @Bean
+    public TokenBasedRememberMeServices tokenBasedRememberMeServices(UserDetailsService userDetailsService) {
+        TokenBasedRememberMeServices services = new TokenBasedRememberMeServices("1234567", userDetailsService);
+        services.setTokenValiditySeconds(30 * 24 * 60 * 60); // 30 days
+        services.setAlwaysRemember(true);
+        services.setCookieName("CREMEMBER");
+        return services;
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
         return new ProviderManager(provider);
     }
 
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationProvider authenticationProvider) {
-//        return new ProviderManager(authenticationProvider);
-//    }
-
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepo) {
-        return username -> userRepo.findByName(username)
+        return name -> userRepo.findByName(name)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
