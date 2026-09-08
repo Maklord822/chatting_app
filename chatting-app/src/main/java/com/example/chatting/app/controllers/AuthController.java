@@ -6,6 +6,7 @@ import com.example.chatting.app.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,14 +30,27 @@ public class AuthController {
 
 
     @PostMapping("/user/register")
-    public ResponseEntity<?> registerUser(@AuthenticationPrincipal User user,
+    public ResponseEntity<?> registerUser(Authentication authentication,
                                           @RequestBody @Valid UserRequestDto userRequestDto) {
+        if (authentication != null && authentication.isAuthenticated()) {
 
-        if (user!=null) {
             return ResponseEntity.ok(false);
         }
 
-       return ResponseEntity.ok(userService.registerUser(userRequestDto));
+        return ResponseEntity.ok(userService.registerUser(userRequestDto));
+
+    }
+
+    @PostMapping("/user/login")
+    public ResponseEntity<?> loginUser(Authentication authentication,
+                                       @RequestBody @Valid UserRequestDto userRequestDto) {
+
+        if (authentication != null && authentication.isAuthenticated()) {
+
+            return ResponseEntity.ok(false);
+        }
+
+        return ResponseEntity.ok(userService.loginUser(userRequestDto));
 
     }
 

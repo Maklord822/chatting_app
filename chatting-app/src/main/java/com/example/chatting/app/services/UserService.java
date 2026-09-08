@@ -46,6 +46,23 @@ public class UserService {
         return new UserResponseDto(true, "registered", transformUserToDto(user));
     }
 
+    public UserResponseDto loginUser(UserRequestDto userRequestDto) {
+
+        if (!userRepository.existsByName(userRequestDto.name())) {
+            return new UserResponseDto(false,"name doesn't exist", null);
+        }
+
+        User user = userRepository.findByName(userRequestDto.name()).orElseThrow();
+
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userRequestDto.name(), userRequestDto.password())
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        return new UserResponseDto(true, "logged in", transformUserToDto(user));
+    }
+
     public UserDto getUserById(Long id) {
 
         User user = userRepository.findById(id).orElseThrow();

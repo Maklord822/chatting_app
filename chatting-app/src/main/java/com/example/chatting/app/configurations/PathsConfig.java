@@ -16,7 +16,8 @@ public class PathsConfig {
                 "/home",
                 "/csrf-token",
                 "/auth/user/get",
-                "/auth/user/register");
+                "/auth/user/register",
+                "/auth/user/login");
     }
 
     @Bean(value = "securedPaths")

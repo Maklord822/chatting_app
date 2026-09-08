@@ -49,9 +49,11 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) {
 
-        return http.csrf(csrfConfig -> csrfConfig
+        return http
+                .csrf(csrfConfig -> csrfConfig
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                )
 
 
                 //.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
@@ -59,7 +61,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> {
                     publicPaths.forEach(path -> requests.requestMatchers(path).permitAll());
                     securedPaths.forEach(path -> requests.requestMatchers(path).authenticated());
-                    requests.anyRequest().denyAll();
+                   // requests.anyRequest().denyAll();
                 })
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -95,6 +97,11 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder);
         return new ProviderManager(provider);
     }
+
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationProvider authenticationProvider) {
+//        return new ProviderManager(authenticationProvider);
+//    }
 
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepo) {

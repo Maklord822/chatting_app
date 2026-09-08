@@ -4,6 +4,7 @@ import com.example.chatting.app.entities.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -16,7 +17,7 @@ public class HelloController {
         return "hello world";
     }
 
-    @GetMapping("/home")
+    @PostMapping("/home")
     public ResponseEntity<?> home(
             @AuthenticationPrincipal User user
     ) {
