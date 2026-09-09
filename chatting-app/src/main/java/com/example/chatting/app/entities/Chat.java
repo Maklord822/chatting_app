@@ -30,7 +30,8 @@ public class Chat {
     @OneToMany(
             mappedBy = "chat",
             cascade = CascadeType.ALL,
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
     )
     private List<Message> messages;
 

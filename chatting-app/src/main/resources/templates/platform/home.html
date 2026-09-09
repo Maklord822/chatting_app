@@ -360,6 +360,31 @@
             opacity: 0.6;
         }
 
+        /* new button for empty state */
+        .empty-action-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            background: #1f2a3a;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 0.7rem 2rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .empty-action-btn:hover {
+            background: #2b3a4f;
+        }
+
+        .empty-action-btn i {
+            margin-right: 8px;
+        }
+
         /* subtle footer */
         .footer-note {
             margin-top: 2.2rem;
@@ -454,6 +479,15 @@
 
         body.dark .empty-chats {
             color: #95abc4;
+        }
+
+        body.dark .empty-action-btn {
+            background: #3b495c;
+            color: white;
+        }
+
+        body.dark .empty-action-btn:hover {
+            background: #4e6077;
         }
 
         body.dark .footer-note {
@@ -703,9 +737,14 @@
             if (!userData || userData === false) {
                 userNameEl.textContent = 'Guest';
                 avatarEl.innerHTML = '<i class="fas fa-user-circle" style="font-size: 2rem;"></i>';
+                // show "go to chats" button for guest
                 chatListContainer.innerHTML = `
                     <div class="empty-chats">
                         <i class="fas fa-lock"></i> sign in to see chats
+                        <br>
+                        <a href="/chattings" class="empty-action-btn" style="display: inline-block; text-decoration: none; background: #1f2a3a; color: white; border: none; border-radius: 40px; padding: 0.7rem 2rem; font-weight: 500; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-top: 1rem;">
+                            <i class="fas fa-comment-dots"></i> Go to chats
+                        </a>
                     </div>
                 `;
                 chatCountBadge.textContent = '0';
@@ -733,6 +772,10 @@
                 chatListContainer.innerHTML = `
                     <div class="empty-chats">
                         <i class="fas fa-comment-slash"></i> no chats yet
+                        <br>
+                        <a href="/chattings" class="empty-action-btn" style="display: inline-block; text-decoration: none; background: #1f2a3a; color: white; border: none; border-radius: 40px; padding: 0.7rem 2rem; font-weight: 500; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-top: 1rem;">
+                            <i class="fas fa-plus-circle"></i> Go to chats
+                        </a>
                     </div>
                 `;
             } else {

@@ -95,6 +95,7 @@ public class ChatController {
         User user = (User) authentication.getPrincipal();
 
         List<ChatDto> chatDtos = new ArrayList<>();
+        System.out.println(user.getChats().size());
        for (Chat chat : user.getChats()) {
 
            ChatDto chatDto = chatService.transformChatToDto(chat,0);

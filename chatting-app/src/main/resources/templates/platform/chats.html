@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <style>
-        /* ---------- base / reset ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -38,7 +37,6 @@
             transition: background 0.2s, box-shadow 0.2s;
         }
 
-        /* header */
         .header-row {
             display: flex;
             justify-content: space-between;
@@ -148,7 +146,6 @@
             font-size: 1rem;
         }
 
-        /* ---- chat list panel ---- */
         .chats-section {
             margin-top: 1.8rem;
         }
@@ -158,6 +155,8 @@
             align-items: baseline;
             justify-content: space-between;
             margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.8rem;
         }
 
         .chats-header h3 {
@@ -243,7 +242,6 @@
             opacity: 0.6;
         }
 
-        /* ---- message panel (hidden by default) ---- */
         .message-panel {
             display: none;
             margin-top: 2rem;
@@ -260,6 +258,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+            gap: 0.6rem;
         }
 
         .message-header .back-btn {
@@ -281,12 +281,16 @@
             font-weight: 600;
             font-size: 1.2rem;
             color: #1f2a3a;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
         }
 
         .chat-actions-header {
             display: flex;
             gap: 0.5rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .chat-action-btn {
@@ -405,7 +409,6 @@
             padding: 0.3rem 0;
         }
 
-        /* message input */
         .message-input-area {
             display: flex;
             gap: 0.6rem;
@@ -451,6 +454,113 @@
         .message-input-area .send-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+
+        /* user list bar */
+        .user-list-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: #f0f4fc;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.8rem;
+            color: #1f2a3a;
+            border: 1px solid #e0e8f0;
+            flex-wrap: wrap;
+        }
+        .user-list-bar:hover {
+            background: #e3ebf5;
+        }
+        .user-list-bar .user-avatar-mini {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #d0dcec;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: #1a2633;
+            margin-right: -0.2rem;
+            border: 2px solid white;
+        }
+        .user-list-bar .user-avatar-mini:last-child {
+            margin-right: 0;
+        }
+        .user-list-bar .more-indicator {
+            background: #d0dcec;
+            border-radius: 30px;
+            padding: 0.1rem 0.6rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #1a2633;
+        }
+        .user-popup {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #e0e8f0;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1rem;
+            min-width: 150px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 10;
+            margin-top: 0.4rem;
+        }
+        .user-popup.active {
+            display: block;
+        }
+        .user-popup .user-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #1f2a3a;
+        }
+        .user-popup .user-item .init {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #d0dcec;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+
+        body.dark .user-list-bar {
+            background: #2b3647;
+            border-color: #3b495c;
+            color: #dce6f2;
+        }
+        body.dark .user-list-bar:hover {
+            background: #334050;
+        }
+        body.dark .user-list-bar .user-avatar-mini {
+            background: #3b4a5e;
+            color: #d3e0f0;
+            border-color: #1e2630;
+        }
+        body.dark .user-list-bar .more-indicator {
+            background: #3b4a5e;
+            color: #d3e0f0;
+        }
+        body.dark .user-popup {
+            background: #1e2630;
+            border-color: #3b495c;
+        }
+        body.dark .user-popup .user-item {
+            color: #dce6f2;
+        }
+        body.dark .user-popup .user-item .init {
+            background: #3b4a5e;
+            color: #d3e0f0;
         }
 
         /* dark theme */
@@ -639,7 +749,6 @@
             background: #5e3838;
         }
 
-        /* modal dark */
         body.dark .modal-overlay {
             background: rgba(0,0,0,0.6);
         }
@@ -722,7 +831,6 @@
             margin-left: auto;
         }
 
-        /* ----- modal (unchanged) ----- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -849,7 +957,6 @@
             min-height: 1.2rem;
         }
 
-        /* small scroll */
         .chat-list::-webkit-scrollbar,
         .message-container::-webkit-scrollbar {
             width: 5px;
@@ -871,7 +978,6 @@
             background: #3b4a5e;
         }
 
-        /* connection status */
         .connection-status {
             font-size: 0.7rem;
             padding: 0.2rem 0.6rem;
@@ -898,12 +1004,42 @@
             background: #3a1e1e;
             color: #f0baba;
         }
+
+        .create-chat-btn {
+            background: #1f2a3a;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .create-chat-btn:hover {
+            background: #2b3a4f;
+        }
+        body.dark .create-chat-btn {
+            background: #3b495c;
+            color: white;
+        }
+        body.dark .create-chat-btn:hover {
+            background: #4e6077;
+        }
+
+        .chat-title-large .user-list-bar-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container" id="appContainer">
-    <!-- header row -->
     <div class="header-row">
         <div class="user-area">
             <div class="avatar" id="avatarDisplay">
@@ -926,11 +1062,13 @@
         </div>
     </div>
 
-    <!-- chats section -->
     <div class="chats-section" id="chatsSection">
         <div class="chats-header">
             <h3><i class="fas fa-comments" style="margin-right: 8px; opacity:0.7;"></i>Chats</h3>
-            <span class="chats-badge" id="chatCountBadge">0</span>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <span class="chats-badge" id="chatCountBadge">0</span>
+                <button class="create-chat-btn" id="createChatBtn"><i class="fas fa-plus-circle"></i> Create</button>
+            </div>
         </div>
 
         <div class="chat-list" id="chatListContainer">
@@ -940,11 +1078,19 @@
         </div>
     </div>
 
-    <!-- message panel (hidden by default) -->
     <div class="message-panel" id="messagePanel">
         <div class="message-header">
             <button class="back-btn" id="backToChatsBtn"><i class="fas fa-arrow-left"></i> Back</button>
-            <span class="chat-title-large" id="currentChatTitle">Chat</span>
+            <span class="chat-title-large" id="currentChatTitle">
+                Chat
+                <span class="user-list-bar-wrap" id="userListWrap">
+                    <span class="user-list-bar" id="userListBar">
+                        <i class="fas fa-users" style="font-size: 0.7rem; opacity:0.7;"></i>
+                        <span id="userListSummary">0</span>
+                    </span>
+                    <div class="user-popup" id="userPopup"></div>
+                </span>
+            </span>
             <div class="chat-actions-header" id="chatActionsHeader">
                 <span class="connection-status disconnected" id="connectionStatus">● Disconnected</span>
             </div>
@@ -954,7 +1100,6 @@
         </div>
         <div id="loadMoreIndicator" class="load-more-indicator" style="display: none;">loading older messages…</div>
 
-        <!-- message input -->
         <div class="message-input-area" id="messageInputArea">
             <input type="text" id="messageInput" placeholder="Type a message..." maxlength="1000">
             <button class="send-btn" id="sendMessageBtn"><i class="fas fa-paper-plane"></i> Send</button>
@@ -966,17 +1111,16 @@
     </div>
 </div>
 
-<!-- ===== MODAL (login / register) ===== -->
 <div class="modal-overlay" id="authModal">
     <div class="modal-panel">
         <button class="modal-close" id="modalCloseBtn"><i class="fas fa-times"></i></button>
         <h2 id="modalTitle">Login</h2>
         <div class="sub" id="modalSub">Enter your credentials</div>
-        <div class="field">
+        <div class="field" id="modalNameField">
             <label for="modalUsername">Username</label>
             <input type="text" id="modalUsername" placeholder="your username" autocomplete="username">
         </div>
-        <div class="field">
+        <div class="field" id="modalPasswordField">
             <label for="modalPassword">Password</label>
             <input type="password" id="modalPassword" placeholder="••••••••" autocomplete="current-password">
         </div>
@@ -992,7 +1136,6 @@
     (function() {
         "use strict";
 
-        // ----- DOM refs -----
         const userNameEl = document.getElementById('userNameDisplay');
         const avatarEl = document.getElementById('avatarDisplay');
         const chatListContainer = document.getElementById('chatListContainer');
@@ -1005,7 +1148,6 @@
         let loginBtn = document.getElementById('loginBtn');
         let registerBtn = document.getElementById('registerBtn');
 
-        // modal
         const modalOverlay = document.getElementById('authModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalSub = document.getElementById('modalSub');
@@ -1015,8 +1157,9 @@
         const modalSubmitBtn = document.getElementById('modalSubmitBtn');
         const modalCancelBtn = document.getElementById('modalCancelBtn');
         const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const modalNameField = document.getElementById('modalNameField');
+        const modalPasswordField = document.getElementById('modalPasswordField');
 
-        // message panel
         const messagePanel = document.getElementById('messagePanel');
         const messageContainer = document.getElementById('messageContainer');
         const currentChatTitle = document.getElementById('currentChatTitle');
@@ -1027,8 +1170,12 @@
         const sendMessageBtn = document.getElementById('sendMessageBtn');
         const chatActionsHeader = document.getElementById('chatActionsHeader');
         const connectionStatus = document.getElementById('connectionStatus');
+        const createChatBtn = document.getElementById('createChatBtn');
 
-        // ----- state -----
+        const userListBar = document.getElementById('userListBar');
+        const userPopup = document.getElementById('userPopup');
+        const userListSummary = document.getElementById('userListSummary');
+
         let currentUser = null;
         let modalMode = 'login';
         let csrfToken = null;
@@ -1039,15 +1186,15 @@
         let loggedInUserId = null;
         let loggedInUserName = null;
         let currentChatCreatorId = null;
+        let currentChatUsers = [];
 
-        // WebSocket state
         let stompClient = null;
         let isConnected = false;
         let currentSubscription = null;
         let reconnectAttempts = 0;
         const MAX_RECONNECT_ATTEMPTS = 5;
+        let reconnectTimeout = null;
 
-        // ----- helpers -----
         function escapeHtml(text) {
             if (!text) return '';
             const map = {
@@ -1069,7 +1216,6 @@
             } catch (_) { return dateStr; }
         }
 
-        // ----- CSRF fetch -----
         async function fetchCsrfToken() {
             try {
                 const resp = await fetch('/csrf-token', {
@@ -1089,7 +1235,6 @@
             }
         }
 
-        // ----- fetch user data -----
         async function fetchUserData(token) {
             try {
                 const headers = new Headers();
@@ -1119,7 +1264,6 @@
             }
         }
 
-        // ----- fetch chats for user -----
         async function fetchUserChats(token) {
             try {
                 const headers = new Headers();
@@ -1144,7 +1288,6 @@
             }
         }
 
-        // ----- fetch messages for a chat -----
         async function fetchMessages(chatId, page, token) {
             try {
                 const headers = new Headers();
@@ -1158,27 +1301,27 @@
                     credentials: 'include'
                 });
                 if (!resp.ok) {
-                    if (resp.status === 404) return { messages: [], hasMore: false };
+                    if (resp.status === 404) return { messages: [], hasMore: false, users: [] };
                     throw new Error(`Messages fetch failed: ${resp.status}`);
                 }
                 const data = await resp.json();
-                if (data && Array.isArray(data)) {
-                    return { messages: data, hasMore: data.length === 20 };
-                }
-                if (data && typeof data === 'object') {
+                if (data && data.messages && Array.isArray(data.messages)) {
+                    const reversed = [...data.messages].reverse();
+                    const users = data.includedUsers || [];
                     return {
-                        messages: data.messages || [],
-                        hasMore: data.hasMore !== undefined ? data.hasMore : (data.messages && data.messages.length === 20)
+                        messages: reversed,
+                        hasMore: data.messages.length === 20,
+                        users: users,
+                        creator: data.creator
                     };
                 }
-                return { messages: [], hasMore: false };
+                return { messages: [], hasMore: false, users: [] };
             } catch (err) {
                 console.warn('Messages error:', err);
-                return { messages: [], hasMore: false };
+                return { messages: [], hasMore: false, users: [] };
             }
         }
 
-        // ----- fetch chat details (for creator info) -----
         async function fetchChatDetails(chatId, token) {
             try {
                 const headers = new Headers();
@@ -1199,7 +1342,6 @@
             }
         }
 
-        // ----- delete chat -----
         async function deleteChat(chatId, token) {
             try {
                 const headers = new Headers();
@@ -1222,7 +1364,6 @@
             }
         }
 
-        // ----- leave chat -----
         async function leaveChat(chatId, token) {
             try {
                 const headers = new Headers();
@@ -1245,7 +1386,28 @@
             }
         }
 
-        // ----- render chat list -----
+        async function createChat(name, token) {
+            try {
+                const headers = new Headers();
+                if (token) headers.append('X-XSRF-TOKEN', token);
+                headers.append('Accept', 'application/json');
+
+                const resp = await fetch(`/chat/create?name=${encodeURIComponent(name)}`, {
+                    method: 'POST',
+                    headers: headers,
+                    credentials: 'include'
+                });
+                if (!resp.ok) {
+                    const data = await resp.json();
+                    throw new Error(data.message || 'Failed to create chat');
+                }
+                return await resp.json();
+            } catch (err) {
+                console.warn('Create chat error:', err);
+                throw err;
+            }
+        }
+
         function renderChatList(chats) {
             chatListContainer.innerHTML = '';
             if (!chats || chats.length === 0) {
@@ -1265,6 +1427,7 @@
                 let includedCount = 0;
                 let chatId = chat.id || chat.chatId || idx;
                 let creatorId = chat.creatorId || null;
+                let users = chat.includedUsers || [];
 
                 if (typeof chat === 'string') {
                     title = chat;
@@ -1294,7 +1457,6 @@
             chatListContainer.innerHTML = html;
             chatCountBadge.textContent = chats.length;
 
-            // attach click listeners
             document.querySelectorAll('.chat-item').forEach(el => {
                 el.addEventListener('click', function(e) {
                     const id = this.dataset.chatId;
@@ -1305,7 +1467,6 @@
             });
         }
 
-        // ----- render messages -----
         function renderMessages(messages, prepend = false) {
             if (!messages || messages.length === 0) {
                 if (!prepend) {
@@ -1316,10 +1477,22 @@
 
             let html = '';
             messages.forEach(msg => {
-                const senderName = msg.senderName || msg.name || 'User';
+                let senderName = 'User';
+                if (msg.sender && msg.sender.name) {
+                    senderName = msg.sender.name;
+                } else if (msg.senderName) {
+                    senderName = msg.senderName;
+                } else if (msg.name) {
+                    senderName = msg.name;
+                }
+
                 const content = msg.content || msg.message || '';
                 const sentAt = msg.sentAt || msg.timestamp || '';
-                const senderId = msg.senderId || msg.userId || null;
+                let senderId = null;
+                if (msg.sender && msg.sender.id) senderId = msg.sender.id;
+                else if (msg.senderId) senderId = msg.senderId;
+                else if (msg.userId) senderId = msg.userId;
+
                 const isMine = (senderId && loggedInUserId && String(senderId) === String(loggedInUserId)) ||
                                (senderName && loggedInUserName && senderName === loggedInUserName);
 
@@ -1351,16 +1524,26 @@
             }
         }
 
-        // ----- add a single message (for real-time) -----
         function addMessage(message) {
-            const senderName = message.senderName || message.name || 'User';
+            let senderName = 'User';
+            if (message.sender && message.sender.name) {
+                senderName = message.sender.name;
+            } else if (message.senderName) {
+                senderName = message.senderName;
+            } else if (message.name) {
+                senderName = message.name;
+            }
+
             const content = message.content || message.message || '';
             const sentAt = message.sentAt || message.timestamp || new Date().toISOString();
-            const senderId = message.senderId || message.userId || null;
+            let senderId = null;
+            if (message.sender && message.sender.id) senderId = message.sender.id;
+            else if (message.senderId) senderId = message.senderId;
+            else if (message.userId) senderId = message.userId;
+
             const isMine = (senderId && loggedInUserId && String(senderId) === String(loggedInUserId)) ||
                            (senderName && loggedInUserName && senderName === loggedInUserName);
 
-            // Remove placeholder if present
             const placeholder = messageContainer.querySelector('.message-placeholder');
             if (placeholder) placeholder.remove();
 
@@ -1382,15 +1565,46 @@
             messageContainer.scrollTop = messageContainer.scrollHeight;
         }
 
-        // ----- WebSocket connection -----
-        function connectWebSocket(chatId) {
-            if (stompClient && stompClient.connected) {
-                // Already connected, just subscribe to new chat
-                subscribeToChat(chatId);
+        function updateUserListBar(users) {
+            currentChatUsers = users || [];
+            if (!users || users.length === 0) {
+                userListSummary.textContent = '0';
+                userPopup.innerHTML = '';
                 return;
             }
 
-            // Get CSRF token from cookie
+            userListSummary.textContent = users.length;
+
+            let popupHtml = '';
+            users.forEach(u => {
+                const name = u.name || 'User';
+                const init = name.charAt(0).toUpperCase() || 'U';
+                popupHtml += `
+                    <div class="user-item">
+                        <span class="init">${init}</span>
+                        <span>${escapeHtml(name)}</span>
+                    </div>
+                `;
+            });
+            userPopup.innerHTML = popupHtml;
+        }
+
+        function toggleUserPopup(e) {
+            e.stopPropagation();
+            userPopup.classList.toggle('active');
+        }
+
+        function closeUserPopup() {
+            userPopup.classList.remove('active');
+        }
+
+        function connectWebSocket(chatId) {
+            if (stompClient && stompClient.connected) {
+                subscribeToChat(chatId);
+                updateConnectionStatus(true);
+                return;
+            }
+
             function getCsrfTokenFromCookie() {
                 const csrfCookie = document.cookie
                     .split('; ')
@@ -1400,11 +1614,8 @@
 
             const socket = new SockJS('/gs-guide-websocket');
             stompClient = Stomp.over(socket);
-
-            // Disable debug logging
             stompClient.debug = function() {};
 
-            // Add CSRF token to connection headers
             const headers = {
                 'X-XSRF-TOKEN': getCsrfTokenFromCookie()
             };
@@ -1412,24 +1623,20 @@
             stompClient.connect(headers,
                 function(frame) {
                     console.log('Connected to WebSocket');
-                    isConnected = true;
-                    connectionStatus.className = 'connection-status connected';
-                    connectionStatus.textContent = '● Connected';
+                    updateConnectionStatus(true);
                     reconnectAttempts = 0;
-
-                    // Subscribe to the chat
                     subscribeToChat(chatId);
                 },
                 function(error) {
                     console.error('WebSocket connection error:', error);
-                    isConnected = false;
-                    connectionStatus.className = 'connection-status disconnected';
-                    connectionStatus.textContent = '● Disconnected';
-
-                    // Attempt reconnect
+                    updateConnectionStatus(false);
+                    if (reconnectTimeout) {
+                        clearTimeout(reconnectTimeout);
+                        reconnectTimeout = null;
+                    }
                     if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
                         reconnectAttempts++;
-                        setTimeout(() => {
+                        reconnectTimeout = setTimeout(() => {
                             if (currentChatId) connectWebSocket(currentChatId);
                         }, 2000 * reconnectAttempts);
                     }
@@ -1437,11 +1644,23 @@
             );
         }
 
-        // ----- Subscribe to a chat topic -----
+        function updateConnectionStatus(connected) {
+            isConnected = connected;
+            const statusEl = document.getElementById('connectionStatus');
+            if (statusEl) {
+                if (connected) {
+                    statusEl.className = 'connection-status connected';
+                    statusEl.textContent = '● Connected';
+                } else {
+                    statusEl.className = 'connection-status disconnected';
+                    statusEl.textContent = '● Disconnected';
+                }
+            }
+        }
+
         function subscribeToChat(chatId) {
             if (!stompClient || !stompClient.connected) return;
 
-            // Unsubscribe from previous
             if (currentSubscription) {
                 currentSubscription.unsubscribe();
                 currentSubscription = null;
@@ -1451,15 +1670,21 @@
             currentSubscription = stompClient.subscribe(topic, function(message) {
                 try {
                     const msgData = JSON.parse(message.body);
-                    console.log('Received message:', msgData);
-
-                    if (msgData.success && msgData.messageDto) {
-                        addMessage(msgData.messageDto);
+                    let messageDto = null;
+                    if (msgData.messageDto) {
+                        messageDto = msgData.messageDto;
                     } else if (msgData.content) {
-                        // Handle direct message format
-                        addMessage(msgData);
-                    } else if (msgData.messageDto && msgData.messageDto.content) {
-                        addMessage(msgData.messageDto);
+                        messageDto = msgData;
+                    } else if (msgData.success && msgData.messageDto) {
+                        messageDto = msgData.messageDto;
+                    } else if (msgData.message && typeof msgData.message === 'object') {
+                        messageDto = msgData.message;
+                    }
+
+                    if (messageDto) {
+                        addMessage(messageDto);
+                    } else {
+                        console.warn('Unrecognized message format:', msgData);
                     }
                 } catch (e) {
                     console.error('Error processing message:', e);
@@ -1469,12 +1694,10 @@
             console.log(`Subscribed to ${topic}`);
         }
 
-        // ----- Send message via WebSocket -----
         function sendMessage(chatId, content) {
             if (!stompClient || !stompClient.connected) {
-                connectionStatus.className = 'connection-status disconnected';
-                connectionStatus.textContent = '● Disconnected';
-                alert('Not connected to chat server. Please try again.');
+                updateConnectionStatus(false);
+                alert('Not connected to chat server. Please wait for reconnection.');
                 return false;
             }
 
@@ -1484,7 +1707,6 @@
                 content: content.trim()
             };
 
-            // Get CSRF token for the message
             function getCsrfTokenFromCookie() {
                 const csrfCookie = document.cookie
                     .split('; ')
@@ -1498,8 +1720,11 @@
             return true;
         }
 
-        // ----- Disconnect WebSocket -----
         function disconnectWebSocket() {
+            if (reconnectTimeout) {
+                clearTimeout(reconnectTimeout);
+                reconnectTimeout = null;
+            }
             if (currentSubscription) {
                 currentSubscription.unsubscribe();
                 currentSubscription = null;
@@ -1510,12 +1735,9 @@
                 });
                 stompClient = null;
             }
-            isConnected = false;
-            connectionStatus.className = 'connection-status disconnected';
-            connectionStatus.textContent = '● Disconnected';
+            updateConnectionStatus(false);
         }
 
-        // ----- open a chat -----
         async function openChat(chatId, chatTitle, creatorId) {
             if (!chatId) return;
             currentChatId = chatId;
@@ -1524,53 +1746,48 @@
             currentChatTitle.textContent = chatTitle || 'Chat';
             currentChatCreatorId = creatorId;
 
-            // Update chat action buttons
             updateChatActions(chatId, creatorId);
 
-            // Show message panel, hide chats
             chatsSection.style.display = 'none';
             messagePanel.classList.add('active');
 
-            // Reset container
             messageContainer.innerHTML = `<div class="message-placeholder">Loading messages…</div>`;
             loadMoreIndicator.style.display = 'none';
             messageInput.value = '';
             sendMessageBtn.disabled = false;
 
-            // Fetch messages
             await loadMessages(chatId, 0, false);
-
-            // Connect WebSocket
             connectWebSocket(chatId);
+
+            // Attach user list bar events
+            userListBar.addEventListener('click', toggleUserPopup);
+            document.addEventListener('click', function(e) {
+                if (!userListBar.contains(e.target) && !userPopup.contains(e.target)) {
+                    closeUserPopup();
+                }
+            });
         }
 
-        // ----- Update chat action buttons -----
         function updateChatActions(chatId, creatorId) {
             let html = '';
-
-            // Connection status
             html += `<span class="connection-status disconnected" id="connectionStatus">● Disconnected</span>`;
 
-            // Delete button (only if user is creator)
             if (creatorId && loggedInUserId && String(creatorId) === String(loggedInUserId)) {
                 html += `<button class="chat-action-btn danger" id="deleteChatBtn"><i class="fas fa-trash"></i> Delete</button>`;
             }
 
-            // Leave button (always visible for non-creators)
             if (!creatorId || !loggedInUserId || String(creatorId) !== String(loggedInUserId)) {
                 html += `<button class="chat-action-btn" id="leaveChatBtn"><i class="fas fa-sign-out-alt"></i> Leave</button>`;
             }
 
             chatActionsHeader.innerHTML = html;
 
-            // Re-bind connection status
             const statusEl = document.getElementById('connectionStatus');
             if (statusEl) {
                 statusEl.className = isConnected ? 'connection-status connected' : 'connection-status disconnected';
                 statusEl.textContent = isConnected ? '● Connected' : '● Disconnected';
             }
 
-            // Bind delete button
             const deleteBtn = document.getElementById('deleteChatBtn');
             if (deleteBtn) {
                 deleteBtn.addEventListener('click', async function() {
@@ -1588,7 +1805,6 @@
                 });
             }
 
-            // Bind leave button
             const leaveBtn = document.getElementById('leaveChatBtn');
             if (leaveBtn) {
                 leaveBtn.addEventListener('click', async function() {
@@ -1607,7 +1823,6 @@
             }
         }
 
-        // ----- load messages (with page) -----
         async function loadMessages(chatId, page, prepend = false) {
             if (isLoadingMessages) return;
             if (!hasMoreMessages && page > 0) {
@@ -1629,6 +1844,10 @@
                 loadMoreIndicator.style.display = 'none';
             }
 
+            if (result.users && result.users.length > 0) {
+                updateUserListBar(result.users);
+            }
+
             if (!result.messages || result.messages.length === 0) {
                 if (page === 0) {
                     messageContainer.innerHTML = `<div class="message-placeholder">No messages yet</div>`;
@@ -1645,7 +1864,6 @@
             }
         }
 
-        // ----- scroll detection for loading more -----
         function setupScrollListener() {
             messageContainer.addEventListener('scroll', function() {
                 if (!currentChatId) return;
@@ -1662,7 +1880,6 @@
             });
         }
 
-        // ----- back to chats -----
         function backToChats() {
             disconnectWebSocket();
             messagePanel.classList.remove('active');
@@ -1671,20 +1888,22 @@
             currentPage = 0;
             hasMoreMessages = true;
             currentChatCreatorId = null;
+            currentChatUsers = [];
             messageContainer.innerHTML = '';
             loadMoreIndicator.style.display = 'none';
             chatActionsHeader.innerHTML = '<span class="connection-status disconnected" id="connectionStatus">● Disconnected</span>';
+            userListSummary.textContent = '0';
+            userPopup.innerHTML = '';
+            closeUserPopup();
             refreshChatList();
         }
 
-        // ----- refresh chat list -----
         async function refreshChatList() {
             const token = await fetchCsrfToken();
             const chats = await fetchUserChats(token);
             renderChatList(chats);
         }
 
-        // ----- render user UI -----
         function renderUser(userData) {
             currentUser = userData;
 
@@ -1706,6 +1925,7 @@
                 `;
                 document.getElementById('loginBtn').addEventListener('click', () => openModal('login'));
                 document.getElementById('registerBtn').addEventListener('click', () => openModal('register'));
+                createChatBtn.style.display = 'none';
                 return;
             }
 
@@ -1718,6 +1938,7 @@
             if (userData.name) loggedInUserName = userData.name;
 
             refreshChatList();
+            createChatBtn.style.display = 'inline-flex';
 
             authActions.innerHTML = `
                 <button class="auth-btn logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
@@ -1725,19 +1946,30 @@
             document.getElementById('logoutBtn').addEventListener('click', handleLogout);
         }
 
-        // ----- modal open -----
-        function openModal(mode) {
+        function openModal(mode, extra = {}) {
             modalMode = mode;
+            modalNameField.style.display = 'block';
+            modalPasswordField.style.display = 'block';
+            modalPassword.required = true;
+
             if (mode === 'login') {
                 modalTitle.textContent = 'Login';
                 modalSub.textContent = 'Enter your credentials';
                 modalSubmitBtn.textContent = 'Login';
-            } else {
+                modalPasswordField.style.display = 'block';
+            } else if (mode === 'register') {
                 modalTitle.textContent = 'Register';
                 modalSub.textContent = 'Create a new account';
                 modalSubmitBtn.textContent = 'Register';
+                modalPasswordField.style.display = 'block';
+            } else if (mode === 'createChat') {
+                modalTitle.textContent = 'Create Chat';
+                modalSub.textContent = 'Enter a name for the new chat';
+                modalSubmitBtn.textContent = 'Create';
+                modalPasswordField.style.display = 'none';
+                modalPassword.required = false;
             }
-            modalUsername.value = '';
+            modalUsername.value = extra.username || '';
             modalPassword.value = '';
             modalError.textContent = '';
             modalOverlay.classList.add('active');
@@ -1748,8 +1980,30 @@
             modalOverlay.classList.remove('active');
         }
 
-        // ----- handle auth submit -----
         async function handleAuthSubmit() {
+            if (modalMode === 'createChat') {
+                const name = modalUsername.value.trim();
+                if (!name) {
+                    modalError.textContent = 'Please enter a chat name.';
+                    return;
+                }
+                try {
+                    const token = await fetchCsrfToken();
+                    const result = await createChat(name, token);
+                    closeModal();
+                    if (result && result.id) {
+                        refreshChatList();
+                        const title = result.name || name;
+                        openChat(result.id, title, loggedInUserId);
+                    } else {
+                        refreshChatList();
+                    }
+                } catch (err) {
+                    modalError.textContent = err.message || 'Failed to create chat.';
+                }
+                return;
+            }
+
             const username = modalUsername.value.trim();
             const password = modalPassword.value.trim();
             if (!username || !password) {
@@ -1797,7 +2051,6 @@
             }
         }
 
-        // ----- logout -----
         async function handleLogout() {
             try {
                 const token = await fetchCsrfToken();
@@ -1833,7 +2086,6 @@
             }
         }
 
-        // ----- theme -----
         function toggleTheme() {
             const body = document.body;
             const isDark = body.classList.toggle('dark');
@@ -1857,12 +2109,10 @@
             } catch (_) {}
         }
 
-        // ----- send message handler -----
         async function handleSendMessage() {
             if (!currentChatId) return;
             if (!stompClient || !stompClient.connected) {
-                connectionStatus.className = 'connection-status disconnected';
-                connectionStatus.textContent = '● Disconnected';
+                updateConnectionStatus(false);
                 alert('Not connected to chat server. Please wait for reconnection.');
                 return;
             }
@@ -1885,7 +2135,6 @@
             }
         }
 
-        // ----- init -----
         async function initApp() {
             loadThemePreference();
 
@@ -1893,7 +2142,6 @@
             const userData = await fetchUserData(token);
             renderUser(userData);
 
-            // event listeners
             themeToggleBtn.addEventListener('click', toggleTheme);
 
             modalCloseBtn.addEventListener('click', closeModal);
@@ -1903,12 +2151,19 @@
             });
             modalSubmitBtn.addEventListener('click', handleAuthSubmit);
 
-            modalUsername.addEventListener('keydown', (e) => { if (e.key === 'Enter') modalPassword.focus(); });
+            modalUsername.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    if (modalMode === 'createChat') {
+                        handleAuthSubmit();
+                    } else {
+                        modalPassword.focus();
+                    }
+                }
+            });
             modalPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAuthSubmit(); });
 
             backToChatsBtn.addEventListener('click', backToChats);
 
-            // Send message events
             sendMessageBtn.addEventListener('click', handleSendMessage);
             messageInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -1917,16 +2172,21 @@
                 }
             });
 
-            // setup scroll listener for messages
             setupScrollListener();
 
-            // Handle page unload - disconnect WebSocket
+            createChatBtn.addEventListener('click', () => {
+                if (!loggedInUserId) {
+                    alert('Please login first.');
+                    return;
+                }
+                openModal('createChat');
+            });
+
             window.addEventListener('beforeunload', function() {
                 disconnectWebSocket();
             });
         }
 
-        // override renderUser to rebind auth buttons
         const originalRender = renderUser;
         renderUser = function(userData) {
             originalRender(userData);
