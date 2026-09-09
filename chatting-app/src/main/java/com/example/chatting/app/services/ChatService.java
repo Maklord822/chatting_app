@@ -107,10 +107,18 @@ public class ChatService {
 
         Chat chat = chatRepository.findById(chatId).orElseThrow();
         if (!chatRepository.existsByIdAndUsersIncluded_Id(chatId, user.getId())) return "user already left";
-        if (chat.getCreator()==user) return "creator can't leave chat";
+        //if (chat.getCreator()==user) return "creator can't leave chat";
 
         List<User> usersIncluded = chat.getUsersIncluded();
         usersIncluded.remove(user);
+        if (chat.getCreator()==user) {
+            if (!usersIncluded.isEmpty()) {
+                chat.setCreator(usersIncluded.getFirst());
+            } else {
+                chatRepository.delete(chat);
+                return "left";
+            }
+        }
         chat.setUsersIncluded(usersIncluded);
 
         chatRepository.save(chat);
@@ -123,6 +131,8 @@ public class ChatService {
 
         return "left";
     }
+
+
 
     public ChatDto getChatById(Long id, User user, int messagesPage) {
 
@@ -141,10 +151,10 @@ public class ChatService {
         Pageable pageable = PageRequest.of(
                 page,
                 20,
-                Sort.by("SentAt").descending()
+                Sort.by("sentAt").descending()
         );
 
-        return messageRepository.findByChatIdOrderBySentAtDesc(chatId, pageable);
+        return messageRepository.findByChatId(chatId, pageable);
 
     }
 
