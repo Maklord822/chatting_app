@@ -11,5 +11,6 @@ import java.util.List;
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
     boolean existsByIdAndUsersIncluded_Id(Long chatId, Long userId);
+    List<Chat> findByUsersIncluded_Id(Long userId);
 
 }

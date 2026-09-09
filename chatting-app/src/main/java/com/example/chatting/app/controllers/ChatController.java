@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,6 +23,7 @@ import java.util.List;
 public class ChatController {
 
     private final ChatService chatService;
+    private final ChatRepository chatRepository;
 
     @PostMapping("/create")
     public ResponseEntity<?> createChat(Authentication authentication,
@@ -87,14 +89,18 @@ public class ChatController {
         return ResponseEntity.ok(chatService.leaveChat(chatId, user));
 
     }
-
     @GetMapping("/fetch/chats")
-    public ResponseEntity<List<Chat>> fetchChatsOfUser(Authentication authentication) {
+    public ResponseEntity<List<ChatDto>> fetchChatsOfUser(Authentication authentication) {
 
         User user = (User) authentication.getPrincipal();
 
-        return ResponseEntity.ok(user.getChats());
+        List<ChatDto> chatDtos = new ArrayList<>();
+       for (Chat chat : user.getChats()) {
 
+           ChatDto chatDto = chatService.transformChatToDto(chat,0);
+           chatDtos.add(chatDto);
+       }
+
+        return ResponseEntity.ok(chatDtos);
     }
-
 }
