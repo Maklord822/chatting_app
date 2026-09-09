@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -57,7 +58,9 @@ public class ChatService {
 
         Chat chat = chatRepository.findById(chatId).orElseThrow();
 
-        if (chat.getCreator()!=adderUser) return "you don't have permission";
+        System.out.println(adderUser);
+        System.out.println(chat.getCreator());
+        if (!Objects.equals(chat.getCreator().getId(), adderUser.getId())) return "you don't have permission";
         if (chatRepository.existsByIdAndUsersIncluded_Id(chatId, userId)) return "user is already added";
         if (!userRepository.existsById(userId)) return "user doesn't exist";
 
@@ -82,7 +85,7 @@ public class ChatService {
 
         Chat chat = chatRepository.findById(chatId).orElseThrow();
 
-        if (chat.getCreator()!=removerUser) return "you don't have permission";
+        if (!Objects.equals(chat.getCreator().getId(), removerUser.getId())) return "you don't have permission";
         if (!chatRepository.existsByIdAndUsersIncluded_Id(chatId, userId)) return "user is already removed";
         if (!userRepository.existsById(userId)) return "user doesn't exist";
 

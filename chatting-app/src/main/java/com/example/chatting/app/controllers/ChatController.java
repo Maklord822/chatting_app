@@ -55,6 +55,7 @@ public class ChatController {
                                      @PathVariable(name = "userId") Long userId) {
 
         User user = (User) authentication.getPrincipal();
+        System.out.println(user);
 
         return ResponseEntity.ok(chatService.addUser(chatId, user, userId));
 

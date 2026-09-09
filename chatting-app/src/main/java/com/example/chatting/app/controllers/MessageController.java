@@ -1,5 +1,6 @@
 package com.example.chatting.app.controllers;
 
+import com.example.chatting.app.dtos.MessageContent;
 import com.example.chatting.app.dtos.MessageDto;
 import com.example.chatting.app.dtos.MessageResponseDto;
 import com.example.chatting.app.entities.Chat;
@@ -9,11 +10,14 @@ import com.example.chatting.app.repositories.ChatRepository;
 import com.example.chatting.app.repositories.MessageRepository;
 import com.example.chatting.app.repositories.UserRepository;
 import com.example.chatting.app.services.ChatService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -33,15 +37,11 @@ public class MessageController {
     private final MessageRepository messageRepository;
     private final ChatService chatService;
 
-    @MessageMapping("/hello")
+    @MessageMapping("/hello/{pathId}")
     @SendTo("/chat/{pathId}")
     public MessageResponseDto sendMessage(Authentication authentication,
-                                          @PathVariable(name = "pathId") Long id,
-                                          @RequestParam(name = "content")
-                                                   @Validated
-                                                   @NotBlank(message = "content is required")
-                                                   @Size(min = 1, max = 500, message = "The length of the content should be between 1 and 500 characters")
-                                               String content) throws Exception {
+                                          @DestinationVariable("pathId") Long id,
+                                          @Valid @Payload MessageContent messageContent) throws Exception {
             User user = (User) authentication.getPrincipal();
 
         if (!chatRepository.existsByIdAndUsersIncluded_Id(id, user.getId())) return
@@ -51,7 +51,7 @@ public class MessageController {
 
         Message message = new Message();
         message.setSender(user);
-        message.setContent(content);
+        message.setContent(messageContent.content());
         message.setChat(chat);
 
         messageRepository.save(message);

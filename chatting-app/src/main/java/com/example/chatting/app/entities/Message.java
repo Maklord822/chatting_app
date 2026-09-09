@@ -35,7 +35,7 @@ public class Message {
     @CreatedDate
     @CreationTimestamp
     @Column(name = "sent_at", nullable = false, updatable = false)
-    private Instant SentAt;
+    private Instant sentAt;
 
     @JoinColumn(name = "chat")
     @ManyToOne(fetch = FetchType.EAGER)
