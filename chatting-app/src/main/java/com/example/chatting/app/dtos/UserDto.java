@@ -6,5 +6,9 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
-public record UserDto(Long id, String name, String password, List<Chat> chats) {
+public record UserDto(Long id,
+                      String name
+                     // String password,
+                   //   List<ChatDto> chats
+                         ) {
 }

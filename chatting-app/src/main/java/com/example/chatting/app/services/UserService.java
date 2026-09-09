@@ -77,13 +77,13 @@ public class UserService {
 
     }
 
-  private UserDto transformUserToDto(User user) {
+  public UserDto transformUserToDto(User user) {
 
       return new UserDto(
               user.getId(),
-              user.getName(),
-              user.getPassword(),
-              user.getChats()
+              user.getName()
+           //   user.getPassword(),
+           //   user.getChats()
       );
 
   }

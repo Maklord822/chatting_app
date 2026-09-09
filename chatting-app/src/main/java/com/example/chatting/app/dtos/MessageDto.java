@@ -10,11 +10,11 @@ import java.time.Instant;
 public record MessageDto(
 
         Long id,
-        User sender,
+        UserDto sender,
         @NotBlank(message = "content is required")
         @Size(min = 1, max = 500, message = "The length of the content should be between 1 and 500 characters")
         String content,
-        Instant sentAt,
-        Chat chat
+        Instant sentAt
+       // ChatDto chat
 ) {
 }
