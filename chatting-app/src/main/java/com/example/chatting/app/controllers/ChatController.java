@@ -3,6 +3,8 @@ package com.example.chatting.app.controllers;
 import com.example.chatting.app.dtos.ChatDto;
 import com.example.chatting.app.entities.Chat;
 import com.example.chatting.app.entities.User;
+import com.example.chatting.app.repositories.ChatRepository;
+import com.example.chatting.app.repositories.UserRepository;
 import com.example.chatting.app.services.ChatService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/chat")
@@ -81,6 +85,15 @@ public class ChatController {
         User user = (User) authentication.getPrincipal();
 
         return ResponseEntity.ok(chatService.leaveChat(chatId, user));
+
+    }
+
+    @GetMapping("/fetch/chats")
+    public ResponseEntity<List<Chat>> fetchChatsOfUser(Authentication authentication) {
+
+        User user = (User) authentication.getPrincipal();
+
+        return ResponseEntity.ok(user.getChats());
 
     }
 
