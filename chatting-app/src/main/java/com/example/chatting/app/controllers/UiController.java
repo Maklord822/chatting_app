@@ -11,4 +11,10 @@ public class UiController {
 
         return "/platform/home";
     }
+
+    @GetMapping("/chattings")
+    public String chattings() {
+
+        return "/platform/chats";
+    }
 }

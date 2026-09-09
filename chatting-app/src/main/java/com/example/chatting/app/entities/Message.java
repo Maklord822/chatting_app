@@ -25,7 +25,7 @@ public class Message {
     private Long id;
 
     @JoinColumn(name = "sender")
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private User sender;
 
     @Column(name = "content")
