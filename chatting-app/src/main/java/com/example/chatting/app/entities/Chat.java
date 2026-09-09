@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@ToString
+//@ToString
 public class Chat {
 
     @Id
@@ -35,7 +35,11 @@ public class Chat {
     private List<Message> messages;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_included")
+    @JoinTable(
+            name = "users_included",
+            joinColumns = @JoinColumn(name = "chat_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<User> usersIncluded;
 
     @ManyToOne(fetch = FetchType.EAGER)

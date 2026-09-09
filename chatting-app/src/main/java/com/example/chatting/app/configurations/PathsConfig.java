@@ -18,7 +18,10 @@ public class PathsConfig {
                 "/auth/user/get",
                 "/auth/user/register",
                 "/auth/user/login",
-                "/logout");
+                "/logout",
+                "/gs-guide-websocket",
+                "/app/**",
+                "/message/**");
     }
 
     @Bean(value = "securedPaths")

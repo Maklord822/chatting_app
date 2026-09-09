@@ -38,7 +38,7 @@ public class MessageController {
     private final ChatService chatService;
 
     @MessageMapping("/hello/{pathId}")
-    @SendTo("/chat/{pathId}")
+    @SendTo("/message/{pathId}")
     public MessageResponseDto sendMessage(Authentication authentication,
                                           @DestinationVariable("pathId") Long id,
                                           @Valid @Payload MessageContent messageContent) throws Exception {

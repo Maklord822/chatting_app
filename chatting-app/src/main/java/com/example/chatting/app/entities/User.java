@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@ToString
+//@ToString
 public class User implements UserDetails {
 
     @Id
@@ -34,8 +34,7 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @JoinTable(name = "chats")
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "usersIncluded", fetch = FetchType.EAGER)
     private List<Chat> chats;
 
     @Override

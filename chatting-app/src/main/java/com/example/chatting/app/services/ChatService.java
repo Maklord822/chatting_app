@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +31,7 @@ public class ChatService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
+    // create chat
     public ChatDto createChat(User user, String name) {
 
       Chat chat = new Chat();
@@ -44,6 +46,7 @@ public class ChatService {
 
     }
 
+    // delete chat
     public String deleteChat(Long chatId, User user) {
 
         Chat chat = chatRepository.findById(chatId).orElseThrow();
@@ -54,6 +57,7 @@ public class ChatService {
         return "deleted";
     }
 
+    // add user in chat
     public String addUser(Long chatId, User adderUser, Long userId) {
 
         Chat chat = chatRepository.findById(chatId).orElseThrow();
@@ -81,6 +85,7 @@ public class ChatService {
 
     }
 
+    // remove user from chat
     public String removeUser(Long chatId, User removerUser, Long userId) {
 
         Chat chat = chatRepository.findById(chatId).orElseThrow();
@@ -106,6 +111,7 @@ public class ChatService {
 
     }
 
+    // leave chat
     public String leaveChat(Long chatId, User user) {
 
         Chat chat = chatRepository.findById(chatId).orElseThrow();
@@ -135,7 +141,31 @@ public class ChatService {
         return "left";
     }
 
+    // transfer creator to other user and delete old creator
+   public void transferCreatorToOtherUserAndDeleteOldCreator(User user) {
 
+
+        List<Chat> createdChats = new ArrayList<>();
+
+        for (Chat chat : user.getChats()) {
+
+           if (Objects.equals(chat.getCreator().getId(), user.getId())) {
+               createdChats.add(chat);
+           }
+
+        }
+       userRepository.delete(user);
+
+        for (Chat chat : createdChats) {
+
+            if (!chat.getUsersIncluded().isEmpty()) {
+                chat.setCreator(chat.getUsersIncluded().getFirst());
+            } else {
+                chatRepository.delete(chat);
+            }
+
+        }
+   }
 
     public ChatDto getChatById(Long id, User user, int messagesPage) {
 

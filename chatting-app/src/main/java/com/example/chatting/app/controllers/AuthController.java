@@ -3,6 +3,7 @@ package com.example.chatting.app.controllers;
 import com.example.chatting.app.dtos.UserRequestDto;
 import com.example.chatting.app.entities.User;
 import com.example.chatting.app.repositories.UserRepository;
+import com.example.chatting.app.services.ChatService;
 import com.example.chatting.app.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +23,7 @@ public class AuthController {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private final ChatService chatService;
 
     @GetMapping("/user/get")
     public ResponseEntity<?> getUser(Authentication authentication) {
@@ -72,7 +74,7 @@ public class AuthController {
         if (authentication != null && authentication.isAuthenticated()) {
 
             User user = (User) authentication.getPrincipal();
-            userRepository.delete(user);
+            chatService.transferCreatorToOtherUserAndDeleteOldCreator(user);
             return ResponseEntity.ok("deleted");
         }
 
