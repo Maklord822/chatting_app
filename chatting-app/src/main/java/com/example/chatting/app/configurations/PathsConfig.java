@@ -15,16 +15,14 @@ public class PathsConfig {
         return List.of("/",
                // "/home",
                 "/csrf-token",
-                "/auth/user/get",
-                "/auth/user/register",
-                "/auth/user/login",
+                "/auth/**",
                 "/logout");
     }
 
     @Bean(value = "securedPaths")
     public List<String> securedPaths() {
 
-        return List.of("/hello");
+        return List.of("/chat/**");
     }
 
 }

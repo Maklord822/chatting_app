@@ -11,8 +11,6 @@ public record MessageDto(
 
         Long id,
         UserDto sender,
-        @NotBlank(message = "content is required")
-        @Size(min = 1, max = 500, message = "The length of the content should be between 1 and 500 characters")
         String content,
         Instant sentAt
        // ChatDto chat

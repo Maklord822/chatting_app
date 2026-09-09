@@ -26,8 +26,12 @@ public class Chat {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "messages")
+    //@OneToMany(fetch = FetchType.EAGER, mappedBy = "chat")
+    @OneToMany(
+            mappedBy = "chat",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Message> messages;
 
     @ManyToMany(fetch = FetchType.EAGER)
