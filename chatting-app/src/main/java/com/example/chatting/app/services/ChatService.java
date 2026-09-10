@@ -50,7 +50,7 @@ public class ChatService {
     public String deleteChat(Long chatId, User user) {
 
         Chat chat = chatRepository.findById(chatId).orElseThrow();
-        if (chat.getCreator()!=user) return "you don't have permission";
+        if (!Objects.equals(chat.getCreator().getId(), user.getId())) return "you don't have permission";
 
         chatRepository.delete(chat);
 
