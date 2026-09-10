@@ -58,9 +58,16 @@ public class ChatService {
     }
 
     // add user in chat
-    public String addUser(Long chatId, User adderUser, Long userId) {
+    public String addUser(Long chatId, User adderUser, String userName) {
 
         Chat chat = chatRepository.findById(chatId).orElseThrow();
+
+        if (!userRepository.existsByName(userName)) {
+            return "user doesn't exist";
+        }
+
+        User user = userRepository.findByName(userName).orElseThrow();
+        Long userId = user.getId();
 
         System.out.println(adderUser);
         System.out.println(chat.getCreator());
@@ -86,9 +93,16 @@ public class ChatService {
     }
 
     // remove user from chat
-    public String removeUser(Long chatId, User removerUser, Long userId) {
+    public String removeUser(Long chatId, User removerUser, String userName) {
 
         Chat chat = chatRepository.findById(chatId).orElseThrow();
+
+        if (!userRepository.existsByName(userName)) {
+            return "user doesn't exist";
+        }
+
+        User user = userRepository.findByName(userName).orElseThrow();
+        Long userId = user.getId();
 
         if (!Objects.equals(chat.getCreator().getId(), removerUser.getId())) return "you don't have permission";
         if (!chatRepository.existsByIdAndUsersIncluded_Id(chatId, userId)) return "user is already removed";

@@ -55,27 +55,27 @@ public class ChatController {
 
         return ResponseEntity.ok(chatService.deleteChat(id, user));
     }
-    @PostMapping("/{chatId}/add/{userId}")
+    @PostMapping("/{chatId}/add/{userName}")
     public ResponseEntity<?> addUser(Authentication authentication,
                                      @PathVariable(name = "chatId") Long chatId,
-                                     @PathVariable(name = "userId") Long userId) {
+                                     @PathVariable(name = "userName") String userName) {
 
         User user = (User) authentication.getPrincipal();
         System.out.println(user);
 
-        return ResponseEntity.ok(chatService.addUser(chatId, user, userId));
+        return ResponseEntity.ok(chatService.addUser(chatId, user, userName));
 
 
     }
 
-    @DeleteMapping("/{chatId}/remove/{userId}")
+    @DeleteMapping("/{chatId}/remove/{userName}")
     public ResponseEntity<?> removeUser(Authentication authentication,
                                      @PathVariable(name = "chatId") Long chatId,
-                                     @PathVariable(name = "userId") Long userId) {
+                                     @PathVariable(name = "userName") String userName) {
 
         User user = (User) authentication.getPrincipal();
 
-        return ResponseEntity.ok(chatService.removeUser(chatId, user, userId));
+        return ResponseEntity.ok(chatService.removeUser(chatId, user, userName));
 
 
     }
